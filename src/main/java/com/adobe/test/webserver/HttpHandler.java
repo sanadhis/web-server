@@ -1,5 +1,6 @@
 package com.adobe.test.webserver;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -18,11 +19,17 @@ public class HttpHandler implements Runnable{
         try{
             request = socket.getInputStream();
             response = socket.getOutputStream();
+            HttpParser httpRequest;
 
-            HttpRequest httpRequest = new HttpRequest(request);
+            try{
+                httpRequest = new HttpParser(request);
+            }
+            catch(IOException e){
 
-            if (httpRequest.isValid()){
-                HttpResponse httpResponse = new HttpResponse(httpRequest);
+            }
+
+            if (httpRequest.parseRequest() == 200){
+                HttpResponse httpResponse = new HttpResponse(httpRequest.getRequestURL(), httpRequest.getHeaders());
                 response.write(httpResponse.toByte());
             }
             else{
