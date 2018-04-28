@@ -1,4 +1,4 @@
-package com.adobe.test.webserver;
+package com.adobe.test.webserver.http;
 
 /**
 Copyright (C) 2004  Juho Vh-Herttua
@@ -24,7 +24,7 @@ import java.util.*;
 import java.text.*;
 import java.net.URLDecoder;
 
-public class HttpParser {
+public class HttpRequestParser {
   private static final String[][] HttpReplies = {{"100", "Continue"},
                                                  {"101", "Switching Protocols"},
                                                  {"200", "OK"},
@@ -72,7 +72,7 @@ public class HttpParser {
   private Hashtable headers, params;
   private int[] ver;
 
-  public HttpParser(InputStream is) {
+  public HttpRequestParser(InputStream is) {
     reader = new BufferedReader(new InputStreamReader(is));
     method = "";
     url = "";
