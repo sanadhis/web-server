@@ -23,4 +23,5 @@ hs_err_pid*
 
 Description.pdf
 .settings/
+target/
 .DS_Store
