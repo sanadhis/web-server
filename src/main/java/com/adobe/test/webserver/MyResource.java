@@ -31,6 +31,14 @@ public class MyResource {
     @Path("{filename}")
     @Produces(MediaType.TEXT_HTML)
     public InputStream getResponse(@PathParam("filename") String filename) {
+        if(filename.equals("index.html")){
+            try{
+                Thread.sleep(5000);
+            }
+            catch(InterruptedException e){
+                // pass
+            }
+        }
         System.out.println(filename);
         try{
             File f = new File(basePath + "/" + filename);
