@@ -13,9 +13,16 @@ The working flow:
 
 ### HTTP/1.1 Keep-alive (Persistent Connection)
 To use the persistent connection, pass `Keep-alive: <time_in_seconds>` to the HTTP request header.
+**Simple test using curl:**
+```bash
+curl -H "Keep-alive: 5" -v localhost:<port>/index.html localhost:<port>/index.html
+```
 
-### HTTP Request Parser
+### References for HTTP Request Parser
 This code is taken from here: [http://www.java2s.com/Code/Java/Network-Protocol/HttpParser.htm](http://www.java2s.com/Code/Java/Network-Protocol/HttpParser.htm). Aside from the class name, nothing has been changed.
+
+### References for Thread Pooling Implementation
+The thread pooling implementation is inspired by this guy work: [https://github.com/warchildmd/webserver](https://github.com/warchildmd/webserver)
 
 ## Usage
 
