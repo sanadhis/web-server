@@ -7,7 +7,8 @@ import java.util.Date;
 /**
  * Log class.
  * Format: DATE : LOG_TYPE CODE_POSITION - LOG_MESSAGES
- * created by Sanadhi Sutandi on 29/04/2018.
+ * @author Sanadhi Sutandi
+ * @since 29/04/2018
  */
 public class Log {
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

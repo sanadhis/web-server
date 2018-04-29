@@ -5,7 +5,8 @@ import com.adobe.webserver.util.Log;
 
 /**
  * Main class.
- * created by Sanadhi Sutandi on 29/04/2018.
+ * @author Sanadhi Sutandi
+ * @since 29/04/2018
  */
 public class Main {
     /**
@@ -23,7 +24,7 @@ public class Main {
             } catch (NumberFormatException e) {
                 Log.info("Main", "Starting HTTP Server on default port 4433 with web directory at " + args[1]);
             } finally {
-                server = new HttpServer(serverPort, args[1]);
+                server = new HttpServer(serverPort, args[1]); //assume 2nd argument is always correct
                 server.run();
             }
         } else {
@@ -32,7 +33,7 @@ public class Main {
     }
 
     /**
-     * Check if passed arguments satisfy the 
+     * Check if passed arguments satisfy the
      */
     public static boolean isCompleted(String[] args) {
         return args.length == 2;

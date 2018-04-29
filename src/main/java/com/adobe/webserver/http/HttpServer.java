@@ -11,7 +11,8 @@ import com.adobe.webserver.util.Log;
 
 /**
  * HttpServer class.
- * created by Sanadhi Sutandi on 29/04/2018.
+ * @author Sanadhi Sutandi
+ * @since 29/04/2018
  */
 public class HttpServer implements Runnable {
     private final String POSITION = "HTTP SERVER";
@@ -25,12 +26,12 @@ public class HttpServer implements Runnable {
     }
 
     public void run() {
-        ServerSocket socket = null;
+        ServerSocket server_socket = null;
         ThreadPoolExecutor threadPool = null;
         BlockingQueue<Runnable> pool = null;
 
         try {
-            socket = new ServerSocket(serverPort);
+            server_socket = new ServerSocket(serverPort);
             pool = new LinkedBlockingQueue<Runnable>();
             threadPool = new ThreadPoolExecutor(10, 10, 10, TimeUnit.SECONDS, pool);
         } catch (IOException e) {
@@ -38,9 +39,10 @@ public class HttpServer implements Runnable {
             System.exit(1);
         }
 
+        //loop forever, listen and accept for connection, handle by thread
         while (true) {
             try {
-                threadPool.execute(new Thread(new HttpHandler(socket.accept(), webDirectory)));
+                threadPool.execute(new Thread(new HttpHandler(server_socket.accept(), webDirectory)));
             } catch (IOException e) {
                 Log.error(POSITION, "cannot accept new connection");
                 break;
@@ -50,9 +52,10 @@ public class HttpServer implements Runnable {
             }
         }
 
+        //close thread pool executer and the socket
         threadPool.shutdown();
         try {
-            socket.close();
+            server_socket.close();
         } catch (IOException e) {
             Log.error(POSITION, "cannot close socket");
         }

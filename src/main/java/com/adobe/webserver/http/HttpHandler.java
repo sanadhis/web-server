@@ -9,7 +9,8 @@ import com.adobe.webserver.util.Log;
 
 /**
  * HttpHandler class.
- * created by Sanadhi Sutandi on 29/04/2018.
+ * @author Sanadhi Sutandi
+ * @since 29/04/2018
  */
 public class HttpHandler implements Runnable {
     private final String POSITION = "HttpHandler";
@@ -27,6 +28,7 @@ public class HttpHandler implements Runnable {
         OutputStream streamOfoutput = null;
         boolean acceptKeepAlive = true;
 
+        //looping forever allows the implementation of keepalive with uncertain duration for the persistency
         for (;;) {
             try {
                 streamOfInput = serverSocket.getInputStream();
@@ -34,6 +36,7 @@ public class HttpHandler implements Runnable {
                 HttpRequestParser httpRequest = null;
                 int keepaliveDuration = -1; //default assume keepalive is not enabled
 
+                //parsing incoming stream input
                 try {
                     httpRequest = new HttpRequestParser(streamOfInput);
                 } catch (Exception e) {
@@ -41,6 +44,7 @@ public class HttpHandler implements Runnable {
                 }
 
                 if (isValidRequest(httpRequest.parseRequest())) {
+                    //accept only keep alive header in the first request of the corresponding connection
                     if (acceptKeepAlive) {
                         try {
                             keepaliveDuration = Integer.parseInt(httpRequest.getHeader("keep-alive"));
@@ -49,18 +53,22 @@ public class HttpHandler implements Runnable {
                         }
                     }
 
+                    //write http response to client regardless of keep-alive presence
                     HttpResponse httpResponse = new HttpResponse(httpRequest.getRequestURL(), webDirectory);
                     httpResponse.writeTo(streamOfoutput, keepaliveDuration);
+                    
+                    //process the first request in a connection if and only if it contains "keep-alive" in request header
                     if (acceptKeepAlive && keepaliveDuration != -1) {
+                        //use socket timeout for keepalive extension
                         serverSocket.setKeepAlive(true);
-                        serverSocket.setSoTimeout(keepaliveDuration * 1000);
+                        serverSocket.setSoTimeout(keepaliveDuration * 1000); //convert seconds to milliseconds
                         acceptKeepAlive = false;
                         keepaliveDuration = 0;
-                        continue;
+                        continue; //continue the loop
                     } else if (keepaliveDuration == 0) {
-                        continue;
+                        continue; //continue the loop
                     } else {
-                        break;
+                        break; //this is invoked only when keep alive is not requested/enabled (-1)
                     }
                 } else {
                     Log.error(POSITION, "cannot process non-GET HTTP request");
@@ -72,6 +80,7 @@ public class HttpHandler implements Runnable {
             }
         }
 
+        //close resources
         try {
             streamOfInput.close();
             streamOfoutput.close();
@@ -80,6 +89,11 @@ public class HttpHandler implements Runnable {
         }
     }
 
+    /**
+     * Check if client request is a valid HTTP request or not
+     * 200 indicate it is a valid request
+     * Other codes imply they are not.
+     */
     public boolean isValidRequest(int code){
         return code == 200;
     }

@@ -6,10 +6,12 @@ import java.util.Collections;
 
 /**
  * HttpStatus class.
- * created by Sanadhi Sutandi on 29/04/2018.
+ * @author Sanadhi Sutandi
+ * @since 29/04/2018
  */
 public class HttpStatus {
     private static final Map<Integer, String> statusMap;
+    //only support either 200 or 404 status code
     static {
         Map<Integer, String> aMap = new HashMap<Integer, String>();
         aMap.put(200, "OK");
@@ -17,7 +19,11 @@ public class HttpStatus {
         statusMap = Collections.unmodifiableMap(aMap);
     }
 
-    public static String getStatusAlias(int statusCode) throws NullPointerException {
-        return statusMap.get(statusCode);
+    /**
+     * Get Status code definition
+     * e.g. 200 -> "OK"
+     */
+    public static String getStatusAlias(int httpStatusCode) throws NullPointerException {
+        return statusMap.get(httpStatusCode);
     }
 }
