@@ -27,6 +27,7 @@ public class HttpHandler implements Runnable {
         InputStream streamOfInput = null;
         OutputStream streamOfoutput = null;
         boolean acceptKeepAlive = true;
+        int keepaliveDuration = -1; //default assume keepalive is not enabled
 
         //looping forever allows the implementation of keepalive with uncertain duration for the persistency
         for (;;) {
@@ -34,7 +35,6 @@ public class HttpHandler implements Runnable {
                 streamOfInput = serverSocket.getInputStream();
                 streamOfoutput = serverSocket.getOutputStream();
                 HttpRequestParser httpRequest = null;
-                int keepaliveDuration = -1; //default assume keepalive is not enabled
 
                 //parsing incoming stream input
                 try {
