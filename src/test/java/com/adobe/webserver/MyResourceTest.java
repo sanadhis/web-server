@@ -1,10 +1,10 @@
-package com.adobe.test.webserver;
+package com.adobe.webserver;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 
-import com.adobe.test.webserver.http.HttpServer;
+import com.adobe.webserver.http.HttpServer;
 
 import org.junit.After;
 import org.junit.Before;
