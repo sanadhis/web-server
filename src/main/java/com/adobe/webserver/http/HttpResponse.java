@@ -31,7 +31,7 @@ public class HttpResponse {
         File f = new File(pathToFile);
 
         if (!f.exists() || f.isDirectory()) {
-            pathToFile = "resources/notfound.html";
+            pathToFile = webDirectory + "/notfound.html";
             statusCode = 404;
         }
 
