@@ -1,4 +1,4 @@
-package com.adobe.test.webserver.util;
+package com.adobe.webserver.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

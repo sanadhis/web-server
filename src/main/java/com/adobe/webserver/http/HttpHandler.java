@@ -1,11 +1,11 @@
-package com.adobe.test.webserver.http;
+package com.adobe.webserver.http;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import com.adobe.test.webserver.util.Log;
+import com.adobe.webserver.util.Log;
 
 public class HttpHandler implements Runnable {
     private final String POSITION = "HttpHandler";

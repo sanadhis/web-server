@@ -1,7 +1,7 @@
-package com.adobe.test.webserver;
+package com.adobe.webserver;
 
-import com.adobe.test.webserver.http.HttpServer;
-import com.adobe.test.webserver.util.Log;
+import com.adobe.webserver.http.HttpServer;
+import com.adobe.webserver.util.Log;
 
 /**
  * Main class.

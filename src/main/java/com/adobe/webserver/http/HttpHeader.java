@@ -1,6 +1,6 @@
-package com.adobe.test.webserver.http;
+package com.adobe.webserver.http;
 
-import com.adobe.test.webserver.util.Log;
+import com.adobe.webserver.util.Log;
 
 public class HttpHeader {
     private final String POSITION = "HttpHeader";
@@ -9,8 +9,8 @@ public class HttpHeader {
 
     public HttpHeader(int statusCode, int keepAlive) {
         try {
-            headers = "HTTP/1.1" + statusCode + HttpStatus.getStatus(statusCode) + "\r\n" + "Content-Type: text/html"
-                    + getConnectionCloseHeader(keepAlive) + "\r\n";
+            headers = "HTTP/1.1" + " " + statusCode + " " + HttpStatus.getStatus(statusCode) + "\r\n" + "Content-Type:text/html"
+                    + getConnectionCloseHeader(keepAlive);
         } catch (NullPointerException e) {
             Log.error(POSITION, "cannot resolve status code");
         }
@@ -22,6 +22,6 @@ public class HttpHeader {
     }
 
     public String getConnectionCloseHeader(int keepAlive) {
-        return keepAlive == 0 ? "\r\nConnection: close" : "";
+        return keepAlive == 0 ? "\r\nConnection:close" : "";
     }
 }

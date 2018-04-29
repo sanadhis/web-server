@@ -4,7 +4,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 
-import org.glassfish.grizzly.http.server.HttpServer;
+import com.adobe.test.webserver.http.HttpServer;
 
 import org.junit.After;
 import org.junit.Before;
@@ -13,13 +13,15 @@ import static org.junit.Assert.assertEquals;
 
 public class MyResourceTest {
 
-    private HttpServer server;
     private WebTarget target;
+    private Thread testserver;
 
     @Before
     public void setUp() throws Exception {
         // start the server
-        server = Main.startServer();
+        testserver = new Thread(new HttpServer(9092, "resources"));
+        testserver.start();
+
         // create the client
         Client c = ClientBuilder.newClient();
 
@@ -29,20 +31,23 @@ public class MyResourceTest {
         // --
         // c.configuration().enable(new org.glassfish.jersey.media.json.JsonJaxbFeature());
 
-        target = c.target(Main.BASE_URI);
+        target = c.target("http://localhost:9092/");
     }
 
     @After
     public void tearDown() throws Exception {
-        server.stop();
+        testserver.stop();
     }
 
     /**
-     * Test to see that the message "Got it!" is sent in the response.
+     * Test to see that the 200 status code is sent in the response.
      */
     @Test
     public void testGetIt() {
-        String responseMsg = target.path("myresource").request().get(String.class);
-        assertEquals("Got it!", responseMsg);
+        int statusCode1 = target.path("index.html").request().get().getStatusInfo().getStatusCode();
+        int statusCode2 = target.path("blabla.html").request().get().getStatusInfo().getStatusCode();
+
+        assertEquals(200, statusCode1);
+        assertEquals(404, statusCode2);
     }
 }

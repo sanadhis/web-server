@@ -1,4 +1,4 @@
-package com.adobe.test.webserver.http;
+package com.adobe.webserver.http;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -7,7 +7,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import com.adobe.test.webserver.util.Log;
+import com.adobe.webserver.util.Log;
 
 public class HttpServer implements Runnable {
     private final int port;

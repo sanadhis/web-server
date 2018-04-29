@@ -1,4 +1,4 @@
-package com.adobe.test.webserver.http;
+package com.adobe.webserver.http;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,7 +11,7 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import com.adobe.test.webserver.util.Log;
+import com.adobe.webserver.util.Log;
 
 public class HttpResponse {
     private final String POSITION = "HttpResponse";
@@ -32,6 +32,7 @@ public class HttpResponse {
 
         if (!f.exists() || f.isDirectory()) {
             pathToFile = webDirectory + "/notfound.html";
+            statusCode = 404;
         }
 
         try {

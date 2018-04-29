@@ -1,4 +1,4 @@
-package com.adobe.test.webserver.http;
+package com.adobe.webserver.http;
 
 /**
 Copyright (C) 2004  Juho Vh-Herttua
