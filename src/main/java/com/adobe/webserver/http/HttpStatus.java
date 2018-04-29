@@ -4,6 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Collections;
 
+/**
+ * HttpStatus class.
+ * created by Sanadhi Sutandi on 29/04/2018.
+ */
 public class HttpStatus {
     private static final Map<Integer, String> statusMap;
     static {
@@ -13,7 +17,7 @@ public class HttpStatus {
         statusMap = Collections.unmodifiableMap(aMap);
     }
 
-    public static String getStatus(int statusCode) throws NullPointerException {
+    public static String getStatusAlias(int statusCode) throws NullPointerException {
         return statusMap.get(statusCode);
     }
 }

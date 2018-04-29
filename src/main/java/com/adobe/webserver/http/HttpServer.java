@@ -9,14 +9,18 @@ import java.util.concurrent.TimeUnit;
 
 import com.adobe.webserver.util.Log;
 
+/**
+ * HttpServer class.
+ * created by Sanadhi Sutandi on 29/04/2018.
+ */
 public class HttpServer implements Runnable {
-    private final int port;
+    private final String POSITION = "HTTP SERVER";
+    
+    private final int serverPort;
     private final String webDirectory;
 
-    private final String POSITION = "HTTP SERVER";
-
-    public HttpServer(int port, String webDirectory) {
-        this.port = port;
+    public HttpServer(int serverPort, String webDirectory) {
+        this.serverPort = serverPort;
         this.webDirectory = webDirectory;
     }
 
@@ -26,7 +30,7 @@ public class HttpServer implements Runnable {
         BlockingQueue<Runnable> pool = null;
 
         try {
-            socket = new ServerSocket(port);
+            socket = new ServerSocket(serverPort);
             pool = new LinkedBlockingQueue<Runnable>();
             threadPool = new ThreadPoolExecutor(10, 10, 10, TimeUnit.SECONDS, pool);
         } catch (IOException e) {
@@ -38,14 +42,15 @@ public class HttpServer implements Runnable {
             try {
                 threadPool.execute(new Thread(new HttpHandler(socket.accept(), webDirectory)));
             } catch (IOException e) {
-                threadPool.shutdown();
                 Log.error(POSITION, "cannot accept new connection");
+                break;
             } catch (Exception e) {
                 Log.error(POSITION, "hard crash, exiting..");
                 break;
             }
         }
 
+        threadPool.shutdown();
         try {
             socket.close();
         } catch (IOException e) {

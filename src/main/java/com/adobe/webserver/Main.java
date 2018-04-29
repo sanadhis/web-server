@@ -5,7 +5,7 @@ import com.adobe.webserver.util.Log;
 
 /**
  * Main class.
- *
+ * created by Sanadhi Sutandi on 29/04/2018.
  */
 public class Main {
     /**
@@ -14,14 +14,26 @@ public class Main {
      */
     public static void main(String[] args) {
         if (isCompleted(args)) {
-            final HttpServer server = new HttpServer(Integer.parseInt(args[0]), args[1]);
-            Log.info("Main", "Starting HTTP Server");
-            server.run();
+            final HttpServer server;
+            int serverPort = 4433; //default server port
+
+            try {
+                serverPort = Integer.parseInt(args[0]);
+                Log.info("Main", "Starting HTTP Server on port " + args[0] + " with web directory at " + args[1]);
+            } catch (NumberFormatException e) {
+                Log.info("Main", "Starting HTTP Server on default port 4433 with web directory at " + args[1]);
+            } finally {
+                server = new HttpServer(serverPort, args[1]);
+                server.run();
+            }
         } else {
             System.out.println("Argument missmatch, pass: <port> <web_directory>");
         }
     }
 
+    /**
+     * Check if passed arguments satisfy the 
+     */
     public static boolean isCompleted(String[] args) {
         return args.length == 2;
     }

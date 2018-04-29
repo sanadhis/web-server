@@ -13,31 +13,37 @@ import java.nio.file.Paths;
 
 import com.adobe.webserver.util.Log;
 
+/**
+ * HttpResponse class.
+ * created by Sanadhi Sutandi on 29/04/2018.
+ */
 public class HttpResponse {
     private final String POSITION = "HttpResponse";
-    private String path;
-    private String webDirectory;
+
+    private String requestedFile;
+    private String webDirectoryPath;
 
     private final String projectPath = System.getProperty("user.dir");
 
-    public HttpResponse(String path, String webDirectory) {
-        this.path = path;
-        this.webDirectory = projectPath + "/" + webDirectory;
+    public HttpResponse(String requestedFile, String webDirectory) {
+        this.requestedFile = requestedFile;
+        this.webDirectoryPath = projectPath + "/" + webDirectory;
     }
 
-    public void writeTo(OutputStream output, int keepAlive) {
-        String pathToFile = webDirectory + path;
-        int statusCode = 200; // default
+    public void writeTo(OutputStream output, int keepAliveDuration) {
+        String pathToFile = webDirectoryPath + requestedFile;
+        int httpStatusCode = 200; // default
         File f = new File(pathToFile);
 
         if (!f.exists() || f.isDirectory()) {
-            pathToFile = webDirectory + "/notfound.html";
-            statusCode = 404;
+            Log.info(POSITION, "file does not exist, render notfound.html");
+            pathToFile = webDirectoryPath + "/notfound.html";
+            httpStatusCode = 404;
         }
 
         try {
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output));
-            writeHttpHeadersTo(writer, statusCode, keepAlive);
+            writeHttpHeadersTo(writer, httpStatusCode, keepAliveDuration);
             Log.info(POSITION, "opening " + pathToFile);
 
             InputStream in = Files.newInputStream(Paths.get(pathToFile));
@@ -49,12 +55,12 @@ public class HttpResponse {
             reader.close();
             writer.flush();
         } catch (IOException e) {
-            Log.error(POSITION, "file does not exist");
+            Log.error(POSITION, "file does not exist or cannot write to output stream");
         }
     }
 
-    public void writeHttpHeadersTo(BufferedWriter writer, int statusCode, int keepAlive) throws IOException {
-        HttpHeader headers = new HttpHeader(statusCode, keepAlive);
-        writer.write(headers.toString());
+    public void writeHttpHeadersTo(BufferedWriter responseWriter, int httpStatusCode, int keepAliveDuration) throws IOException {
+        HttpHeader completeHeadersResponse = new HttpHeader(httpStatusCode, keepAliveDuration);
+        responseWriter.write(completeHeadersResponse.toString());
     }
 }

@@ -7,35 +7,40 @@ import java.net.Socket;
 
 import com.adobe.webserver.util.Log;
 
+/**
+ * HttpHandler class.
+ * created by Sanadhi Sutandi on 29/04/2018.
+ */
 public class HttpHandler implements Runnable {
     private final String POSITION = "HttpHandler";
-    private Socket socket;
+
+    private Socket serverSocket;
     private String webDirectory;
 
-    public HttpHandler(Socket socket, String webDirectory) {
-        this.socket = socket;
+    public HttpHandler(Socket serverSocket, String webDirectory) {
+        this.serverSocket = serverSocket;
         this.webDirectory = webDirectory;
     }
 
     public void run() {
-        InputStream input = null;
-        OutputStream output = null;
+        InputStream streamOfInput = null;
+        OutputStream streamOfoutput = null;
         boolean acceptKeepAlive = true;
 
         for (;;) {
             try {
-                input = socket.getInputStream();
-                output = socket.getOutputStream();
+                streamOfInput = serverSocket.getInputStream();
+                streamOfoutput = serverSocket.getOutputStream();
                 HttpRequestParser httpRequest = null;
                 int keepaliveDuration = -1; //default assume keepalive is not enabled
 
                 try {
-                    httpRequest = new HttpRequestParser(input);
+                    httpRequest = new HttpRequestParser(streamOfInput);
                 } catch (Exception e) {
                     Log.error(POSITION, "cannot parse incoming request");
                 }
 
-                if (httpRequest.parseRequest() == 200) {
+                if (isValidRequest(httpRequest.parseRequest())) {
                     if (acceptKeepAlive) {
                         try {
                             keepaliveDuration = Integer.parseInt(httpRequest.getHeader("keep-alive"));
@@ -45,12 +50,10 @@ public class HttpHandler implements Runnable {
                     }
 
                     HttpResponse httpResponse = new HttpResponse(httpRequest.getRequestURL(), webDirectory);
-                    Log.info(POSITION, "keepalive duration " + keepaliveDuration);
-                    httpResponse.writeTo(output, keepaliveDuration);
+                    httpResponse.writeTo(streamOfoutput, keepaliveDuration);
                     if (acceptKeepAlive && keepaliveDuration != -1) {
-                        Log.info(POSITION, "here");
-                        socket.setKeepAlive(true);
-                        socket.setSoTimeout(keepaliveDuration * 1000);
+                        serverSocket.setKeepAlive(true);
+                        serverSocket.setSoTimeout(keepaliveDuration * 1000);
                         acceptKeepAlive = false;
                         keepaliveDuration = 0;
                         continue;
@@ -60,21 +63,25 @@ public class HttpHandler implements Runnable {
                         break;
                     }
                 } else {
-                    Log.error(POSITION, "cannot accept non-GET request");
+                    Log.error(POSITION, "cannot process non-GET HTTP request");
                     break;
                 }
             } catch (IOException e) {
-                Log.error(POSITION, "cannot process input and output stream, socket is closed");
+                Log.info(POSITION, "cannot process streamOfInput and streamOfoutput, socket is already closed");
                 break;
             }
         }
 
         try {
-            input.close();
-            output.close();
+            streamOfInput.close();
+            streamOfoutput.close();
         } catch (IOException e) {
-            Log.error(POSITION, "cannot close input and output stream, already closed");
+            Log.info(POSITION, "cannot close streamOfInput and streamOfoutput, already closed");
         }
+    }
+
+    public boolean isValidRequest(int code){
+        return code == 200;
     }
 
 }

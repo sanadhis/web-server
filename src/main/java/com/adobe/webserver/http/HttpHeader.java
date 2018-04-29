@@ -2,23 +2,27 @@ package com.adobe.webserver.http;
 
 import com.adobe.webserver.util.Log;
 
+/**
+ * HttpHeader class.
+ * created by Sanadhi Sutandi on 29/04/2018.
+ */
 public class HttpHeader {
     private final String POSITION = "HttpHeader";
-    private String headers;
-    private String end_headers;
+
+    private String responseHeaders;
+    private final String endHeaders = "\r\n\r\n";
 
     public HttpHeader(int statusCode, int keepAlive) {
         try {
-            headers = "HTTP/1.1" + " " + statusCode + " " + HttpStatus.getStatus(statusCode) + "\r\n" + "Content-Type:text/html"
+            responseHeaders = "HTTP/1.1" + " " + statusCode + " " + HttpStatus.getStatusAlias(statusCode) + "\r\n" + "Content-Type:text/html"
                     + getConnectionCloseHeader(keepAlive);
         } catch (NullPointerException e) {
             Log.error(POSITION, "cannot resolve status code");
         }
-        end_headers = "\r\n\r\n";
     }
 
     public String toString() {
-        return headers + end_headers;
+        return responseHeaders + endHeaders;
     }
 
     public String getConnectionCloseHeader(int keepAlive) {
