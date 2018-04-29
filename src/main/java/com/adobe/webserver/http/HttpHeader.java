@@ -12,10 +12,13 @@ public class HttpHeader {
     private String responseHeaders;
     private final String endHeaders = "\r\n\r\n";
 
-    public HttpHeader(int statusCode, int keepAlive) {
+    public HttpHeader(int statusCode, int keepAlive, long contentLength) {
         try {
-            responseHeaders = "HTTP/1.1" + " " + statusCode + " " + HttpStatus.getStatusAlias(statusCode) + "\r\n" + "Content-Type:text/html"
-                    + getConnectionCloseHeader(keepAlive);
+            responseHeaders = "HTTP/1.1" + " " + statusCode + " " 
+                                + HttpStatus.getStatusAlias(statusCode) 
+                                + "\r\n" + "Content-Type:text/html"
+                                + "\r\n" + "Content-Length:" + String.valueOf(contentLength)
+                                + getConnectionCloseHeader(keepAlive);
         } catch (NullPointerException e) {
             Log.error(POSITION, "cannot resolve status code");
         }

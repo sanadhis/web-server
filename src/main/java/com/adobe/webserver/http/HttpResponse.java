@@ -34,24 +34,31 @@ public class HttpResponse {
         String pathToFile = webDirectoryPath + requestedFile;
         int httpStatusCode = 200; // default
         File f = new File(pathToFile);
+        long contentLength = 0;
 
         if (!f.exists() || f.isDirectory()) {
             Log.info(POSITION, "file does not exist, render notfound.html");
             pathToFile = webDirectoryPath + "/notfound.html";
+            f = new File(pathToFile);
             httpStatusCode = 404;
-        }
+        } 
 
         try {
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output));
-            writeHttpHeadersTo(writer, httpStatusCode, keepAliveDuration);
+            contentLength = f.length();
+            
+            writeHttpHeadersTo(writer, httpStatusCode, keepAliveDuration, contentLength);
+            
             Log.info(POSITION, "opening " + pathToFile);
 
             InputStream in = Files.newInputStream(Paths.get(pathToFile));
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             String line = null;
+
             while ((line = reader.readLine()) != null) {
                 writer.write(line + "\n");
             }
+            
             reader.close();
             writer.flush();
         } catch (IOException e) {
@@ -59,8 +66,9 @@ public class HttpResponse {
         }
     }
 
-    public void writeHttpHeadersTo(BufferedWriter responseWriter, int httpStatusCode, int keepAliveDuration) throws IOException {
-        HttpHeader completeHeadersResponse = new HttpHeader(httpStatusCode, keepAliveDuration);
+    public void writeHttpHeadersTo(BufferedWriter responseWriter, int httpStatusCode, 
+                                    int keepAliveDuration, long contentLength) throws IOException {
+        HttpHeader completeHeadersResponse = new HttpHeader(httpStatusCode, keepAliveDuration, contentLength);
         responseWriter.write(completeHeadersResponse.toString());
     }
 }
