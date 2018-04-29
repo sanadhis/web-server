@@ -47,5 +47,10 @@ mvn test
 mvn package
 ```
 
+### Running the JAR Package
+```bash
+java -jar <jar_file> "<PORT>" "<path_to_web_directory>"
+```
+
 ## License
 GNU GPL-3.0.
